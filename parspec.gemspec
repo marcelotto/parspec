@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Marcel Otto']
   spec.email         = ['marcelotto.de@gmail.com']
   spec.summary       = %q{Testing of Parslet grammars and transformations}
-  spec.description   = %q{A grammar specification language, which translates to RSpec}
+  spec.description   = %q{A testing framework for Parslet grammars, in the spirit of gUnit.}
   spec.homepage      = 'http://github.com/marcelotto/parspec'
   spec.license       = 'MIT'
 
