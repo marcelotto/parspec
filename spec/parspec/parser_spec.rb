@@ -12,6 +12,10 @@ describe Parspec::Parser do
 
     it { should_not parse('test')}
 
+    it 'should preserve escaped double-quotes' do
+      expect(string_parser.parse('"\\"test\\""')).to eq string: '\\"test\\"'
+    end
+
     it 'should preserve special characters' do
       expect(string_parser.parse("\"test with:\n\tspecial characters\n\tesp. \\\", \\\\\""))
         .to eq string: "test with:\n\tspecial characters\n\tesp. \\\", \\\\"

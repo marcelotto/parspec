@@ -1,0 +1,14 @@
+describe Parspec::Parser
+
+string:
+    "\"test\"" OK
+    "\"test
+     on multiple lines\"" OK
+    "test" FAIL
+
+    "\"test\"" -> "string: 'test'"
+# TODO:   "\"\\\"test\\\"\"" -> "string: '\"test\"'"
+
+validity_example:
+    "\"test\" OK" OK
+    "\"test\" FAIL" OK
