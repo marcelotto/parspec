@@ -2,7 +2,6 @@
 require 'singleton'
 require 'optparse'
 
-
 module Parspec
   class Cli
     include Singleton
@@ -11,10 +10,7 @@ module Parspec
       @options = options
       parse_command_line!
       puts "Translating #{@options[:input]} to #{@options[:output]} ..."
-      parser = Parspec::Parser.new()
-      tree = parser.parse(File.read(@options[:input]))
-      transformer = Parspec::Transform.new()
-      translation = header +  transformer.apply(tree)
+      translation = header + Parspec.translate(@options[:input])
       if @options[:print_only]
         puts translation
         exit
