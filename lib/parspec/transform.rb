@@ -22,11 +22,20 @@ RSPEC_TEMPLATE
 RSPEC_TEMPLATE
     end
 
+    rule(include_rule: simple(:rule_name)) do <<RSPEC_TEMPLATE
+    it_behaves_like 'every #{rule_name} parsing'
+RSPEC_TEMPLATE
+    end
+
     rule(rule_name: simple(:rule_name), examples: sequence(:examples)) do <<RSPEC_TEMPLATE
-  context '#{rule_name} parsing' do
+  shared_examples 'every #{rule_name} parsing' do
     subject { parser.#{rule_name} }
 
 #{examples.join("\n")}
+  end
+
+  context '#{rule_name} parsing' do
+    it_behaves_like 'every #{rule_name} parsing'
   end
 RSPEC_TEMPLATE
     end

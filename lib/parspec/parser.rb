@@ -9,13 +9,17 @@ module Parspec
     rule(:comment)    { str('#') >> (newline.absent? >> any).repeat >> newline }
     rule(:comment?)   { comment.maybe }
 
-    rule(:newline_or_comment) { newline | comment }
+    rule(:newline_or_comment)  { newline | comment }
     rule(:newline_or_comment?) { newline_or_comment.maybe }
 
     rule(:special)         { match['"\\\\'] }
     rule(:escaped_special) { str('\\') >> match['"\\\\'] }
     #rule(:special) { match['\0\t\n\r"\\\\'] }
     #rule(:escaped_special) { str("\\") >> match['0tnr"\\\\'] }
+
+    rule(:rule_name) do
+      match['A-Za-z_'] >> match['\w'].repeat >> match['!?'].maybe
+    end
 
     rule(:string) do
       str('"') >>
@@ -36,19 +40,24 @@ module Parspec
       string.as(:output)
     end
 
-    rule(:description_example)  do
-      ( validity_example | tree_example ) >> newline_or_comment
+    rule(:include_example) do
+      str('include') >> space >> rule_name.as(:include_rule)
     end
+
+    rule(:description_example)  do
+      (validity_example | tree_example | include_example) >> newline_or_comment
+    end
+
     rule(:description_examples) do
       (space? >> (comment | description_example)).repeat
     end
 
-    rule(:rule_name) { match['A-Za-z_'] >> match['\w'].repeat >> match['!?'].maybe }
     rule(:rule_description) do
       rule_name.as(:rule_name) >>
       str(':') >> space? >> newline_or_comment >>
       description_examples.as(:examples)
     end
+
     rule(:rule_descriptions) { rule_description.repeat }
 
     rule(:spec) do
