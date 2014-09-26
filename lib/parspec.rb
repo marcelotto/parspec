@@ -24,7 +24,9 @@ module Parspec
   end
 
   def self.translate_string(str)
-    Transform.new.apply(Parser.new.parse(str))
+    translation = Transform.new.apply(Parser.new.parse(str))
+    raise Error, "unexpected translation: #{translation}" unless translation.is_a? String
+    translation
   rescue Parslet::ParseFailed => e
     deepest = deepest_cause e.cause
     line, column = deepest.source.line_and_column(deepest.pos)
