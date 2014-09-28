@@ -13,9 +13,9 @@ module Parspec
     rule(:newline_or_comment?) { newline_or_comment.maybe }
 
     rule(:special)         { match['"\\\\'] }
-    rule(:escaped_special) { str('\\') >> match['"\\\\'] }
-    #rule(:special) { match['\0\t\n\r"\\\\'] }
-    #rule(:escaped_special) { str("\\") >> match['0tnr"\\\\'] }
+    #rule(:escaped_special) { str("\\") >> match['"\\\\'] }
+    #rule(:special)         { match['\t\n\r"\\\\'] }
+    rule(:escaped_special) { str("\\") >> match['tnr"\\\\'] }
 
     rule(:rule_name) do
       match['A-Za-z_'] >> match['\w'].repeat >> match['!?'].maybe
@@ -23,7 +23,7 @@ module Parspec
 
     rule(:string) do
       str('"') >>
-      (escaped_special | special.absent? >> any).repeat.as(:string) >>
+      ((escaped_special | special.absent? >> any).repeat).as(:string) >>
       str('"') >> space?
     end
 

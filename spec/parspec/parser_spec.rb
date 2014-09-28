@@ -16,6 +16,10 @@ describe Parspec::Parser do
       expect(string_parser.parse('"\\"test\\""')).to eq string: '\\"test\\"'
     end
 
+    it 'should preserve escape-sequences' do
+      expect(string_parser.parse('"\\n"')).to eq string: '\n'
+    end
+
     it 'should preserve special characters' do
       expect(string_parser.parse("\"test with:\n\tspecial characters\n\tesp. \\\", \\\\\""))
         .to eq string: "test with:\n\tspecial characters\n\tesp. \\\", \\\\"
@@ -82,6 +86,7 @@ describe Parspec::Parser do
     let(:rule_description_parser) { parser.rule_description }
     subject { rule_description_parser }
 
+    it { should parse "a_rule_name:\n" }
     it { should parse "a_rule_name:\n\"test\" OK" }
     it { should parse <<PARSPEC_RULE_DESCRIPTION
 a_rule_name:
@@ -170,6 +175,11 @@ a_rule_name: # comment #1
 
 PARSPEC_RULE_DESCRIPTION
     }
+
+    it 'should parse a rule without examples to {rule_name: "name", examples: [...]}' do
+      expect(rule_description_parser.parse("a_rule_name:\n#some comment\n\n"))
+        .to eq rule_name: 'a_rule_name', examples: []
+    end
 
     it 'should be parsed to {rule_name: "name", examples: [...]}' do
       tree = {
