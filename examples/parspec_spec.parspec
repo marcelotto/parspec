@@ -1,4 +1,4 @@
-describe Parspec::Parser
+parser Parspec::Parser
 
 string:
     "\"test\"" OK

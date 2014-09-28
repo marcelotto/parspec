@@ -2,7 +2,9 @@
 require 'parslet'
 require 'parspec/version'
 require 'parspec/parser'
-require 'parspec/transform'
+require 'parspec/shared_transform'
+require 'parspec/parser_spec_transform'
+require 'parspec/transformer_spec_transform'
 require 'parspec/cli'
 
 module Parspec
@@ -24,8 +26,14 @@ module Parspec
   end
 
   def self.translate_string(str, options = {})
-    Transform.no_debug_parse = options[:no_debug_parse]
-    translation = Transform.new.apply(Parser.new.parse(str))
+    ParserSpecTransform.no_debug_parse = options[:no_debug_parse]
+    tree = Parser.new.parse(str)
+    tree = SharedTransform.new.apply(tree)
+    translation = Parslet::Transform.new do
+      spec = { subject_class: simple(:subject_class), rules: subtree(:rules)}
+      rule(spec.merge(type: 'parser'))      { ParserSpecTransform.new.apply(tree) }
+      rule(spec.merge(type: 'transformer')) { TransformerSpecTransform.new.apply(tree) }
+    end.apply(tree)
     raise Error, "unexpected translation: #{translation}" unless translation.is_a? String
     translation
   rescue Parslet::ParseFailed => e

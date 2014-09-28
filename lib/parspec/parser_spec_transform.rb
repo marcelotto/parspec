@@ -1,20 +1,8 @@
 module Parspec
-  class Transform < Parslet::Transform
+  class ParserSpecTransform < Parslet::Transform
 
     class << self
       attr_accessor :no_debug_parse
-    end
-
-    rule(status: simple(:status)) { status == 'OK' }
-    rule(string: simple(:string)) do
-      string.to_s.gsub(
-          /\\[tnr"\/\\]/,
-          "\\t" => "\t",
-          "\\n" => "\n",
-          "\\r" => "\r",
-          '\\"' => '"',
-          "\\\\" => "\\"
-      )
     end
 
     rule(input: simple(:input), validity: simple(:valid)) do <<RSPEC_TEMPLATE
@@ -24,7 +12,7 @@ RSPEC_TEMPLATE
 
     rule(input: simple(:input), output: simple(:output)) do <<RSPEC_TEMPLATE
     it "should parse '#{input.gsub('"', '\\"')}' to #{output.gsub('"', '\\"')}" do
-      expect(subject.#{Transform.no_debug_parse ? 'parse' : 'parse_with_debug'}('#{input.gsub("'", "\\''")}')).to eq #{output}
+      expect(subject.#{ParserSpecTransform.no_debug_parse ? 'parse' : 'parse_with_debug'}('#{input.gsub("'", "\\''")}')).to eq #{output}
     end
 RSPEC_TEMPLATE
     end
@@ -48,9 +36,10 @@ RSPEC_TEMPLATE
 RSPEC_TEMPLATE
     end
 
-    rule(spec_name: simple(:spec_name), rules: sequence(:rules)) do <<RSPEC_TEMPLATE
-describe #{spec_name} do
-  let(:parser) { #{spec_name}.new }
+    rule(type: simple(:type), subject_class: simple(:subject_class),
+         rules: sequence(:rules)) do <<RSPEC_TEMPLATE
+describe #{subject_class} do
+  let(:parser) { #{subject_class}.new }
 
 #{rules.join("\n")}
 end

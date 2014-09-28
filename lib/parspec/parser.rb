@@ -61,8 +61,8 @@ module Parspec
     rule(:rule_descriptions) { rule_description.repeat }
 
     rule(:spec) do
-      str('describe') >> space >>
-      (newline.absent? >> any).repeat.as(:spec_name) >> newline_or_comment.repeat >>
+      (str('parser') | str('transformer')).as(:type) >> space >>
+      (newline.absent? >> any).repeat.as(:subject_class) >> newline_or_comment.repeat >>
       rule_descriptions.as(:rules)
     end
 

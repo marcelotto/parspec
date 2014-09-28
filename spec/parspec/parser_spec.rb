@@ -232,7 +232,7 @@ PARSPEC_RULE_DESCRIPTION
 
   context 'spec parsing' do
     it { should parse <<PARSPEC
-describe "a Parslet grammar"
+parser Some::Parser
 
 rule1:
   "test" OK
@@ -245,7 +245,7 @@ PARSPEC
     }
 
     it { should parse <<PARSPEC
-describe "a Parslet grammar" # a comment
+parser Some::Parser # a comment
 
 rule1:
   "test" OK
@@ -254,7 +254,7 @@ PARSPEC
     }
 
     it { should parse <<PARSPEC
-describe "a Parslet grammar"
+parser Some::Parser
 # a comment
 rule1:
   "test" OK
@@ -263,7 +263,7 @@ PARSPEC
     }
 
     it { should parse <<PARSPEC
-describe "a Parslet grammar"
+parser Some::Parser
 
 # a comment
 
@@ -275,7 +275,8 @@ PARSPEC
 
     it 'should be parsed to {spec_name: "name", rules: [...]}' do
       tree = {
-          spec_name: '"a Parslet grammar"',
+          subject_class: 'Some::Parser',
+          type: 'parser',
           rules: [
             { rule_name: 'rule1',
               examples: [
@@ -290,7 +291,7 @@ PARSPEC
       }
 
       expect(parser.parse(<<PARSPEC
-describe "a Parslet grammar"
+parser Some::Parser
 
 rule1:
   "test" OK
