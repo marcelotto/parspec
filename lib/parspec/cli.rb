@@ -10,7 +10,8 @@ module Parspec
       @options = options
       parse_command_line!
       puts "Translating #{@options[:input]} to #{@options[:output]} ..."
-      translation = header + Parspec.translate(@options[:input])
+      translation = header + Parspec.translate(@options[:input],
+                                    no_debug_parse: @options[:no_debug_parse])
       if @options[:print_only]
         puts translation
         exit
@@ -24,37 +25,42 @@ module Parspec
       <<HEADER
 # coding: utf-8
 require 'spec_helper'
+require 'parslet/convenience'
 require 'parslet/rig/rspec'
 
 HEADER
     end
 
-    private
+  private
 
     def parse_command_line!
       optparse = OptionParser.new do |opts|
         opts.banner = 'Usage: parspec [options] PARSPEC_FILE'
 
-        opts.on( '-h', '--help', 'Display this information' ) do
+        opts.on('-h', '--help', 'Display this information') do
           puts opts
           exit
         end
 
-        opts.on( '-v', '--version', 'Print version information' ) do
+        opts.on('-v', '--version', 'Print version information') do
           puts "Parspec #{VERSION}"
           exit
         end
 
-        opts.on( '-p', '--print', 'Print the translation to stdout only' ) do
+        opts.on('-p', '--print', 'Print the translation to stdout only') do
           @options[:print_only] = true
         end
 
-        opts.on( '-o', '--out OUTPUT_FILE', 'Path where translated RSpec file should be stored' ) do |file|
+        opts.on('-o', '--out OUTPUT_FILE', 'Path where translated RSpec file should be stored') do |file|
           @options[:output] = file
         end
 
-        opts.on( '-e', '--header HEADER', 'A block of code to be put in front of the translation' ) do |header|
+        opts.on('-e', '--header HEADER', 'A block of code to be put in front of the translation') do |header|
           @options[:header] = header
+        end
+
+        opts.on('--no-debug-parse', "'Don't print the whole Parslet ascii_tree on errors") do
+          @options[:no_debug_parse] = true
         end
 
       end

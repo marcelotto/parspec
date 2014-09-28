@@ -1,6 +1,10 @@
 module Parspec
   class Transform < Parslet::Transform
 
+    class << self
+      attr_accessor :no_debug_parse
+    end
+
     rule(status: simple(:status)) { status == 'OK' }
     rule(string: simple(:string)) do
       string.to_s.gsub(
@@ -20,7 +24,7 @@ RSPEC_TEMPLATE
 
     rule(input: simple(:input), output: simple(:output)) do <<RSPEC_TEMPLATE
     it "should parse '#{input.gsub('"', '\\"')}' to #{output.gsub('"', '\\"')}" do
-      expect(subject.parse('#{input.gsub("'", "\\''")}')).to eq #{output}
+      expect(subject.#{Transform.no_debug_parse ? 'parse' : 'parse_with_debug'}('#{input.gsub("'", "\\''")}')).to eq #{output}
     end
 RSPEC_TEMPLATE
     end

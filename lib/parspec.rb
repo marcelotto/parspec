@@ -11,19 +11,20 @@ module Parspec
   ParseError     = Class.new Error
   TransformError = Class.new Error
 
-  def self.translate(file_or_str)
+  def self.translate(file_or_str, options = {})
     if File.exist?(file_or_str)
-      translate_file(file_or_str)
+      translate_file(file_or_str, options)
     else
-      translate_string(file_or_str)
+      translate_string(file_or_str, options)
     end
   end
 
-  def self.translate_file(filename)
-    translate_string(File.read(filename))
+  def self.translate_file(filename, options = {})
+    translate_string(File.read(filename), options)
   end
 
-  def self.translate_string(str)
+  def self.translate_string(str, options = {})
+    Transform.no_debug_parse = options[:no_debug_parse]
     translation = Transform.new.apply(Parser.new.parse(str))
     raise Error, "unexpected translation: #{translation}" unless translation.is_a? String
     translation
