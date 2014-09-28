@@ -32,12 +32,13 @@ RSPEC_TEMPLATE
 
     rule(rule_name: simple(:rule_name), examples: sequence(:examples)) do <<RSPEC_TEMPLATE
   shared_examples 'every #{rule_name} parsing' do
-    subject { parser.#{rule_name} }
 
 #{examples.join("\n")}
   end
 
   context '#{rule_name} parsing' do
+    subject { parser.#{rule_name} }
+
     it_behaves_like 'every #{rule_name} parsing'
   end
 RSPEC_TEMPLATE
