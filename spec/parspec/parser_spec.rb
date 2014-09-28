@@ -231,6 +231,8 @@ PARSPEC_RULE_DESCRIPTION
   end
 
   context 'spec parsing' do
+    #TODO: it { should parse 'parser Some::Parser' }
+
     it { should parse <<PARSPEC
 parser Some::Parser
 
@@ -263,6 +265,7 @@ PARSPEC
     }
 
     it { should parse <<PARSPEC
+# a comment
 parser Some::Parser
 
 # a comment
@@ -303,7 +306,6 @@ PARSPEC
 
              )).to eq tree
     end
-
 
   end
 
