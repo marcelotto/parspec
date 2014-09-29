@@ -30,9 +30,11 @@ module Parspec
     tree = Parser.new.parse(str)
     tree = SharedTransform.new.apply(tree)
     translation = Parslet::Transform.new do
-      spec = { subject_class: simple(:subject_class), rules: subtree(:rules)}
-      rule(spec.merge(type: 'parser'))      { ParserSpecTransform.new.apply(tree) }
-      rule(spec.merge(type: 'transformer')) { TransformerSpecTransform.new.apply(tree) }
+      spec = ->(type) {
+        { header: {type: type, subject_class: simple(:subject_class) },
+          rules: subtree(:rules) } }
+      rule(spec['parser'])      { ParserSpecTransform.new.apply(tree) }
+      rule(spec['transformer']) { TransformerSpecTransform.new.apply(tree) }
     end.apply(tree)
     raise Error, "unexpected translation: #{translation}" unless translation.is_a? String
     translation

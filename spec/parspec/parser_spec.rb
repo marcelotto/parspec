@@ -176,7 +176,7 @@ a_rule_name: # comment #1
 PARSPEC_RULE_DESCRIPTION
     }
 
-    it 'should parse a rule without examples to {rule_name: "name", examples: [...]}' do
+    it 'should parse a rule without examples to {rule_name: "name", examples: []}' do
       expect(rule_description_parser.parse("a_rule_name:\n#some comment\n\n"))
         .to eq rule_name: 'a_rule_name', examples: []
     end
@@ -225,13 +225,17 @@ a_rule_name: # comment #1
 
 PARSPEC_RULE_DESCRIPTION
              )).to eq tree
-
     end
 
   end
 
   context 'spec parsing' do
-    #TODO: it { should parse 'parser Some::Parser' }
+    it { should parse '' }
+    it { should parse ' ' }
+    it { should parse "\n" }
+    it { should parse "\n# comment only\n" }
+    it { should parse 'parser Some::Parser' }
+    it { should parse ' parser Some::Parser' }
 
     it { should parse <<PARSPEC
 parser Some::Parser
@@ -256,7 +260,7 @@ PARSPEC
     }
 
     it { should parse <<PARSPEC
-parser Some::Parser
+ parser Some::Parser
 # a comment
 rule1:
   "test" OK
@@ -268,7 +272,7 @@ PARSPEC
 # a comment
 parser Some::Parser
 
-# a comment
+ # a comment
 
 rule1:
   "test" OK
@@ -278,8 +282,10 @@ PARSPEC
 
     it 'should be parsed to {spec_name: "name", rules: [...]}' do
       tree = {
-          subject_class: 'Some::Parser',
-          type: 'parser',
+          header: {
+              subject_class: 'Some::Parser',
+              type: 'parser'
+          },
           rules: [
             { rule_name: 'rule1',
               examples: [

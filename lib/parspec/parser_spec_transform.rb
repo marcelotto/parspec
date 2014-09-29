@@ -36,7 +36,7 @@ RSPEC_TEMPLATE
 RSPEC_TEMPLATE
     end
 
-    rule(type: simple(:type), subject_class: simple(:subject_class),
+    rule(header: {type: simple(:type), subject_class: simple(:subject_class)},
          rules: sequence(:rules)) do <<RSPEC_TEMPLATE
 describe #{subject_class} do
   let(:parser) { #{subject_class}.new }
