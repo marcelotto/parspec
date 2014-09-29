@@ -1,0 +1,66 @@
+parser TOML::Parser
+
+value:
+    "1" OK
+    "-123" OK
+    "120381" OK
+    "181" OK
+    "0181" FAIL
+    "0.1" OK
+    "3.14159" OK
+    "-0.00001" OK
+    ".1" FAIL
+    "true" OK
+    "false" OK
+    "truefalse" FAIL
+    "1979-05-27T07:32:00Z" OK
+    "2013-02-24T17:26:21Z" OK
+    "1979l05-27 07:32:00" FAIL
+    "\"\"" OK
+    "\"hello world\"" OK
+    "\"no way, jos\\u00E9\"" OK
+    "\"hello\nworld\"" FAIL
+    "\"hello/world\"" FAIL
+    "\"\\u001F\"" OK
+
+    "1234"                 -> ":integer => '1234'"
+    "-0.123"               -> ":float   => '-0.123'"
+    "true"                 -> ":boolean => 'true'"
+    "1979-05-27T07:32:00Z" -> ":datetime => '1979-05-27T07:32:00Z'"
+    "\"hello world\""      -> ":string => 'hello world'"
+    "\"hello\nworld\""    -> ":string => \"hello\nworld\""
+
+array:
+    "[]" OK
+    "[1]" OK
+    "[1, 2, 3, 4, 5]" OK
+    "[0.1, -0.1, 3.14159]" OK
+    "[ true, false, true, true ]" OK
+    "[1979-05-27T07:32:00Z]" OK  # [2013-02-24T17:26:21Z]
+    "[\n1\n,\n2\n]" OK
+    "[\n\n\t1  , 2,     3\\t,4\n]" OK
+    "[1, 2, \"three\"]" FAIL
+    "[1,2,]" OK
+    "[1,2\n,\\t]" OK
+
+     "[1,2]"     -> ":array => [ {:integer => '1'}, {:integer => '2'}]"
+     "[]"        -> ":array => '[]'"
+     "[ [1,2] ]"
+        -> ":array => [
+              {:array => [ {:integer => '1'}, {:integer => '2'}]}
+           ]"
+
+key:
+     "foobar" OK
+     "lolwhat.noWAY" OK
+     "no white\\tspace" FAIL
+     "noequal=thing" FAIL
+
+assignment:
+      "key=3.14" OK
+      "key = 10" OK
+      "key = 10.10" OK
+      "key = true" OK
+      "key = \"value\"" OK
+      "#comment=1" FAIL
+      "thing = 1" -> ":key => 'thing', :value => {:integer => '1'}"
