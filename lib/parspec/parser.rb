@@ -20,7 +20,7 @@ module Parspec
       match['A-Za-z_'] >> match['\w'].repeat >> match['!?'].maybe
     end
 
-    rule(:validity) { (str('OK') | str('FAIL')).as(:status) >> ws? }
+    rule(:validity) { (stri('OK') | stri('FAIL')).as(:status) >> ws? }
     rule(:validity_example) { string.as(:input) >> validity.as(:validity) }
 
     rule(:tree_example) do
@@ -63,6 +63,13 @@ module Parspec
           raise ParserError, 'expected a block' unless block_given?
           (yield.absent? >> any).repeat(1)
       end
+    end
+
+    def stri(str)
+      key_chars = str.split(//)
+      key_chars
+        .collect! { |char| match["#{char.upcase}#{char.downcase}"] }
+        .reduce(:>>)
     end
 
   end

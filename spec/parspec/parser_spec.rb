@@ -30,7 +30,9 @@ describe Parspec::Parser do
     let(:validity_example_parser) { parser.validity_example }
     subject { validity_example_parser }
     it { should parse('"test" OK') }
+    it { should parse('"test" ok') }
     it { should parse('"test" FAIL') }
+    it { should parse('"test" Fail') }
     it { should parse("\"test\n on multiple lines\" OK") }
 
     it { should_not parse('"test"') }
