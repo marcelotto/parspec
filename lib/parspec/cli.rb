@@ -59,7 +59,7 @@ HEADER
           @options[:header] = header
         end
 
-        opts.on('--no-debug-parse', "'Don't print the whole Parslet ascii_tree on errors") do
+        opts.on('--no-debug-parse', "Don't print the whole Parslet ascii_tree on errors") do
           @options[:no_debug_parse] = true
         end
 
