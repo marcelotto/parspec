@@ -54,3 +54,26 @@ module Parspec
   end
 
 end
+
+def load_parspec(file, options = {})
+  parspec_file = case File.extname(file)
+    when '.rb' then file.sub(/rb$/, 'parspec')
+    when ''    then "#{file}.parspec"
+  end
+
+  if not File.exists?(parspec_file)
+    # TODO: try to find the file in the load_path
+    raise LoadError, "cannot load such file -- #{parspec_file}"
+  end
+
+  require 'parslet/convenience'
+  require 'parslet/rig/rspec'
+
+  parspec = Parspec.translate_file(parspec_file, options)
+  # TODO: These are not detected as examples by RSpec ...
+  #tmp_file = Tempfile.new([File.basename(parspec_file), '.rb'])
+  #tmp_file.write(parspec)
+  #require tmp_file.path
+  # only as a fallback or if options[:force_eval]
+  eval(parspec)
+end
