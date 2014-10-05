@@ -23,7 +23,7 @@ module Parspec
     rule(:validity) { (stri('OK') | stri('FAIL')).as(:status) >> ws? }
     rule(:validity_example) { string.as(:input) >> validity.as(:validity) }
 
-    rule(:tree_example) do
+    rule(:mapping_example) do
       string.as(:input) >> ws? >> str('->') >> ws? >> string.as(:output)
     end
 
@@ -32,7 +32,7 @@ module Parspec
     end
 
     rule(:description_example) do
-      (validity_example | tree_example | include_example) >> ws?
+      (validity_example | mapping_example | include_example) >> ws?
     end
     rule(:description_examples) { description_example.repeat }
 

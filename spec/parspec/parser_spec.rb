@@ -52,9 +52,9 @@ describe Parspec::Parser do
     end
    end
 
-  context 'tree example parsing' do
-    let(:tree_example_parser) { parser.tree_example }
-    subject { tree_example_parser }
+  context 'mapping example parsing' do
+    let(:mapping_example_parser) { parser.mapping_example }
+    subject { mapping_example_parser }
     it { should parse('"test" -> ":foo => :bar"') }
     it { should parse('"test" -> "{ foo: 42, bar: \'baz\'} "') }
     it { should parse("\"test\n on multiple lines\" -> \"{\n\tfoo: 42,\tbar: 'baz'\n}\"") }
@@ -64,11 +64,11 @@ describe Parspec::Parser do
     it { should_not parse('"test" -> OK') }
 
     it 'should be parsed to {input: {string: "example"}, output: {string: "example"}}' do
-      expect(tree_example_parser.parse('"test" -> ":foo => :bar"'))
+      expect(mapping_example_parser.parse('"test" -> ":foo => :bar"'))
         .to eq input: { string: 'test' }, output: { string: ':foo => :bar' }
-      expect(tree_example_parser.parse('"test" -> "{ foo: 42, bar: \'baz\'} "'))
+      expect(mapping_example_parser.parse('"test" -> "{ foo: 42, bar: \'baz\'} "'))
         .to eq input: { string: 'test' }, output: { string: "{ foo: 42, bar: 'baz'} " }
-      expect(tree_example_parser.parse("\"test\n on multiple lines\" -> \"{\n\tfoo: 42,\tbar: 'baz'\n}\""))
+      expect(mapping_example_parser.parse("\"test\n on multiple lines\" -> \"{\n\tfoo: 42,\tbar: 'baz'\n}\""))
         .to eq input: { string: "test\n on multiple lines" }, output: { string: "{\n\tfoo: 42,\tbar: 'baz'\n}" }
     end
   end
