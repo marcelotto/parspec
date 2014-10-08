@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'singleton'
 require 'optparse'
+require 'pathname'
 
 module Parspec
   class Cli
@@ -9,20 +10,19 @@ module Parspec
     def run(options = {})
       @options = options
       parse_command_line!
-      puts "Translating #{@options[:input]} to #{@options[:output]} ..."
-      translation = header + Parspec.translate(@options[:input],
-                                    no_debug_parse: @options[:no_debug_parse])
-      if @options[:print_only]
+      init_output_dir
+      puts "Translating #@input #{@print_only ? ' ': "to #@output " }..."
+      translation = header + Parspec.translate(@input, @options)
+      if @print_only
         puts translation
         exit
       end
-      File.open(@options[:output], 'w') { |file| file.write(translation) }
+      File.open(@output, 'w') { |file| file.write(translation) }
       self
     end
 
     def header
-      return @options[:header] if @options[:header]
-      <<HEADER
+      @header || <<HEADER
 # coding: utf-8
 require 'spec_helper'
 require 'parslet/convenience'
@@ -31,7 +31,7 @@ require 'parslet/rig/rspec'
 HEADER
     end
 
-  private
+    private
 
     def parse_command_line!
       optparse = OptionParser.new do |opts|
@@ -47,16 +47,20 @@ HEADER
           exit
         end
 
-        opts.on('-p', '--print', 'Print the translation to stdout only') do
-          @options[:print_only] = true
+        opts.on('-s', '--stdout', 'Print the translation to stdout only') do
+          @print_only = true
         end
 
         opts.on('-o', '--out OUTPUT_FILE', 'Path where translated RSpec file should be stored') do |file|
-          @options[:output] = file
+          @output = file
+        end
+
+        opts.on('-b', '--beside-input', 'Put the output file into the same directory as the input') do
+          @beside_input = true
         end
 
         opts.on('-e', '--header HEADER', 'A block of code to be put in front of the translation') do |header|
-          @options[:header] = header
+          @header = header
         end
 
         opts.on('--no-debug-parse', "Don't print the whole Parslet ascii_tree on errors") do
@@ -75,8 +79,29 @@ HEADER
         puts "Error: couldn't find input file #{input}"
         exit(1)
       end
-      @options[:input] = input
-      @options[:output] ||= File.join(File.dirname(input), File.basename(input, File.extname(input)) + '.rb')
+      @input = input
+    end
+
+    def init_output_dir
+      default_dir = File.dirname(@input)
+      default_basename = File.basename(@input, File.extname(@input)) + '.rb'
+
+      # no output defined
+      @output = if not @output
+        File.join (@beside_input ? default_dir : '.'), default_basename
+      # only path given
+      elsif Dir.exist?(@output) or @output.end_with?(File::SEPARATOR) or
+          (File::ALT_SEPARATOR and @output.end_with?(File::ALT_SEPARATOR))
+        warn('Ignoring -b, since directory specified') if @beside_input
+        File.join @output, default_basename
+      # directory and name given
+      elsif File.dirname(@output) != '.'
+        warn('Ignoring -b, since directory specified') if @beside_input
+        @output
+      # only name given
+      else
+        File.join (@beside_input ? default_dir : '.'), @output
+      end
     end
 
   end
