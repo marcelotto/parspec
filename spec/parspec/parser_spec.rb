@@ -12,6 +12,10 @@ describe Parspec::Parser do
 
     it { should_not parse('test')}
 
+    it 'should interpret the empty string correctly' do
+      expect(string_parser.parse('""')).to eq string: [] # TODO: should be ''
+    end
+
     it 'should preserve escaped double-quotes' do
       expect(string_parser.parse('"\\"test\\""')).to eq string: '\\"test\\"'
     end

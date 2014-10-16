@@ -2,6 +2,7 @@ module Parspec
   class SharedTransform < Parslet::Transform
 
     rule(status: simple(:status)) { status.to_s.upcase == 'OK' }
+    rule(string: sequence(:empty)) { '' }
     rule(string: simple(:string)) do
       string.to_s.gsub(
           /\\[tnr"\/\\]/,
