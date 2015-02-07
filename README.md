@@ -1,6 +1,14 @@
 # Parspec
 
-A [gUnit](https://theantlrguy.atlassian.net/wiki/display/ANTLR3/gUnit+-+Grammar+Unit+Testing)-like specification language for [Parslet](http://kschiess.github.io/parslet/) parsers and transformers, which translates to [RSpec](http://rspec.info/).
+A [gUnit](https://theantlrguy.atlassian.net/wiki/display/ANTLR3/gUnit+-+Grammar+Unit+Testing)-like specification language for [Parslet](http://kschiess.github.io/parslet/) parsers and transformers, which gets translated to [RSpec](http://rspec.info/) specs.
+
+
+## Status
+
+This software is feature-complete, since it realizes the features of [gUnit](https://theantlrguy.atlassian.net/wiki/display/ANTLR3/gUnit+-+Grammar+Unit+Testing) (with some additions) completely and can successfully be used as a full [gUnit](https://theantlrguy.atlassian.net/wiki/display/ANTLR3/gUnit+-+Grammar+Unit+Testing)-like replacement of handmade [RSpec](http://rspec.info/) specs, while still using the excellent RSpec testing platform, allowing to integrate the generated specs with handmade RSpec specs.
+
+Although some nice language additions are thinkable, I won't implement them in the near future, until I need them. 
+
 
 
 ## Installation
@@ -99,7 +107,7 @@ The instantiation expression is used to create a RSpec test subject. It usually 
 
 After the definition, a series of examples for the grammar rules follows. Rules start with a rule name followed by a colon.
 
-There are two types of examples: simple validations and mapping examples.
+There are two types of examples: validations and mapping examples.
 
 
 ##### Validations
