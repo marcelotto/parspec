@@ -5,9 +5,8 @@ A [gUnit](https://theantlrguy.atlassian.net/wiki/display/ANTLR3/gUnit+-+Grammar+
 
 ## Status
 
-This software is feature-complete, since it realizes the features of [gUnit](https://theantlrguy.atlassian.net/wiki/display/ANTLR3/gUnit+-+Grammar+Unit+Testing) (with some additions) completely and can successfully be used as a full [gUnit](https://theantlrguy.atlassian.net/wiki/display/ANTLR3/gUnit+-+Grammar+Unit+Testing)-like replacement of handmade [RSpec](http://rspec.info/) specs, while still using the excellent RSpec testing platform, allowing to integrate the generated specs with handmade RSpec specs.
+This software is feature-complete, since it realizes the features of [gUnit](https://theantlrguy.atlassian.net/wiki/display/ANTLR3/gUnit+-+Grammar+Unit+Testing) (with some additions) completely and can successfully be used as a full [gUnit](https://theantlrguy.atlassian.net/wiki/display/ANTLR3/gUnit+-+Grammar+Unit+Testing)-like replacement of handmade [RSpec](http://rspec.info/) specs. I won't implement any new features. Feel free to fork and take over maintainership.
 
-Although some nice language additions are thinkable, I won't implement them in the near future, until I need them. 
 
 
 
@@ -230,7 +229,7 @@ load_parspec __FILE__
 If the `load_parspec` command gets a filename with the extension `.rb`, it looks for a file with the same name, but the extension `.parspec`. For example, if the former Ruby file would be at `spec/my_parser/my_parser_spec.rb`, the `load_parspec` command would try to load a Parspec spec from a file `spec/my_parser/my_parser_spec.parspec`.
 
 
-Note: This feature is currently implemented via `eval`, till I find a way to include specs from other RSpec files or another alternative. If you have any advice, please share it in issue #1.
+Note: This feature is currently implemented via `eval`, till I find a way to include specs from other RSpec files or another alternative. If you have any advice, please share it in [issue #1](https://github.com/marcelotto/parspec/issues/1).
 
 
 ## Contributing
